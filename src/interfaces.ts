@@ -1,12 +1,12 @@
-export interface AuditorAsset {
+export interface IAuditorData {
     type: number;
     action: number;
-    fileHash: AuditorCrypto;
-    docSigHash: AuditorCrypto;
-    location: AuditorLocation;
+    hash: IAuditorCrypto;
+    /*docSigHash: AuditorCrypto;
+    location: AuditorLocation;*/
 }
 
-export interface AuditorCrypto {
+export interface IAuditorCrypto {
     type: string;
     value: string;
 }
@@ -21,3 +21,19 @@ export interface AuditorWalletAttributes {
     
 }
 
+class AuditorCrypto implements IAuditorCrypto {
+    type: string;
+    value: string;
+}
+
+export class AuditorData implements IAuditorData {
+    type: number;
+    action: number;
+    hash: IAuditorCrypto;
+    
+    constructor() {
+        this.type = 0;
+        this.action = 0;
+        this.hash = new AuditorCrypto();
+    }
+}

@@ -1,13 +1,17 @@
 import { Transactions, Utils } from "@arkecosystem/crypto";
 import ByteBuffer from "bytebuffer";
-import { AuditorAsset } from "../interfaces";
-import { AuditorTransactionType, AuditorTransactionSchema} from "../constants";
+import { IAuditorData, AuditorData } from "../interfaces";
+import { AuditorTransactionType, AuditorTransactionSchema } from "../constants";
+import { Serdes } from "../utils/serdes";
+
 
 const { schemas } = Transactions;
+const serdes = new Serdes();
+
 
 export class AuditorTransaction extends Transactions.Transaction {
-  public static typeGroup: number = AuditorTransactionType.GROUP;
   public static type: number = AuditorTransactionType.TYPE;
+  public static typeGroup: number = AuditorTransactionType.GROUP;
   public static key: string = AuditorTransactionType.KEY;
 
   public static getSchema(): Transactions.schemas.TransactionSchema {
@@ -31,36 +35,20 @@ export class AuditorTransaction extends Transactions.Transaction {
 
   public serialize(): ByteBuffer {
     const { data } = this;
-    const auditor = data.asset.auditor as AuditorAsset;
-    let arrayBytes: Array<Uint8Array>;
-    let propertiesLength: number;
-    
-    propertiesLength = 0;
-    for (let properties in auditor){
-        let propUtf8 = Buffer.from(properties, "utf8");
-        arrayBytes.push(propUtf8);
-        propertiesLength += propUtf8.length;
-    }
-    const buffer = new ByteBuffer(propertiesLength + arrayBytes.length, true);
-    
-    for (let item in arrayBytes){
-        buffer.writeUint8(item.length);
-        buffer.append(item, "hex");
-    }
-
-    return buffer;
+    const auditor = data.asset.auditorData as IAuditorData;
+    return serdes.serialize(auditor);
     
   }
 
   public deserialize(buf: ByteBuffer): void {
     const { data } = this;
-    const auditor = {} as AuditorAsset;
+    const auditor = new AuditorData();
+    data.asset = {};
+    //data.asset.auditorData = {type:1, action:1} as IAuditorData
+    //console.log(data.asset);
+    data.asset.auditorData =  serdes.deserialize(buf,auditor);
     
-   for (let property in auditor){
-        const Length = buf.readUint8();
-        auditor[property] = buf.readString(Length);
-    }
-
-    data.asset = { auditor };
+    
+    console.log(data.asset);
   }
 }

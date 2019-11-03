@@ -1,7 +1,7 @@
 export enum AuditorTransactionType {
     GROUP = 1,
     TYPE = 100,
-    KEY = 'auditor'
+    KEY = 'auditorData'
 }
 
 export enum AuditorAssetType {
@@ -19,7 +19,7 @@ export enum AuditorAssetAction {
 export let AuditorTransactionSchemaRequired = ["type", "action"];
 
 export let AuditorTransactionSchema = {
-            auditor: {
+            auditorData: {
               type: "object",
               required: AuditorTransactionSchemaRequired,
               properties: {

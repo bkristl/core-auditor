@@ -1,6 +1,6 @@
 import { Interfaces, Transactions, Utils } from "@arkecosystem/crypto";
 import { AuditorTransaction } from "../transactions";
-import { AuditorAsset } from "../interfaces";
+import { IAuditorData } from "../interfaces";
 
 export class AuditorBuilder extends Transactions.TransactionBuilder<AuditorBuilder> {
   constructor() {
@@ -8,16 +8,18 @@ export class AuditorBuilder extends Transactions.TransactionBuilder<AuditorBuild
     this.data.type = AuditorTransaction.type;
     this.data.typeGroup = AuditorTransaction.typeGroup;
     this.data.version = 2;
-    this.data.fee = Utils.BigNumber.ZERO;
+    this.data.fee = Utils.BigNumber.make("5000000000");
     this.data.amount = Utils.BigNumber.ZERO;
-    this.data.asset = { auditor: {} };
+    this.data.asset = { auditorData: {} };
   }
 
-  public auditorAsset(auditorAsset:AuditorAsset): AuditorBuilder {
-    this.data.asset.auditor = {
-        ...auditorAsset
+  public auditorData(auditorData:IAuditorData): AuditorBuilder {
+    console.log(auditorData);
+   
+    this.data.asset.auditorData = {
+        ...auditorData
     };
-
+    //console.log(this.data.asset);
     return this;
   }
 
